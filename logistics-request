@@ -1,0 +1,24 @@
+local file = fs.open("item-list", "r")
+local line = nil
+local lines = {}
+
+repeat
+  line = file.readLine()
+  table.insert(lines, line)
+until not line
+
+file.close()
+
+local pipe = peripheral.wrap("right")
+local items = pipe.getAvailableItems()
+
+for k,v in pairs(items) do
+  local item = v.getValue1()
+  local count = v.getValue2()
+  for _, entry in ipairs(lines) do
+    if entry == item.getName() then
+      pipe.makeRequest(item, count)
+      break
+    end
+  end
+end
